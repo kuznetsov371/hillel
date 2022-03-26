@@ -1,29 +1,27 @@
 const fs = require('fs');
 const path = require('path');
+const { promisify } = require('util');
 const EventEmitter = require('events');
 
 const MyEventEmitter = new EventEmitter()
 
-function seek(target, dirPath){
-    
-    fs.readdir(dirPath, (err, data) => {
-            if (err) process.exit(1);
-            result = null;
-            data.forEach(element => {
-                if(element == target){
-                   result = path.join(dirPath,target)
-                }
-            });
-            if(result){
-                MyEventEmitter.emit('success',result);
-            }
-            else{
-                MyEventEmitter.emit('fall',{target,dirPath});
-            }
-        });
-        debugger;
-}
+async function seek(target, dirPath){
+    const access = promisify(fs.access);
+    const readdir = promisify(fs.readdir);
 
+    try{
+        await access(dirPath);
+        const data = await readdir(dirPath);
+        if(data.includes(target)){
+            MyEventEmitter.emit('success',path.join(dirPath,target));
+        }
+        else{
+            MyEventEmitter.emit('fall',new Error(`File doesn't exist`))
+        }
+    }catch(err){
+        MyEventEmitter.emit('fall',err)
+    }
+}
 
 module.exports = {
     seek,
