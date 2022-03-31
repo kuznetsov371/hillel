@@ -5,21 +5,21 @@ const { hideBin } = require('yargs/helpers');
 
 const argv = yargs(hideBin(process.argv)).argv;
 
-fileSeeker.MyEventEmitter.addListener('success',payload => {
-    logger.info(payload);
+if(!argv.dir || !argv.fileToFind){
+    logger.error("ERROR! --dir and --fileToFind are required");
+    process.exit(1);
+}
+
+fileSeeker.MyEventEmitter.setVerbose(argv.verbose)
+fileSeeker.seek(argv.fileToFind , argv.dir);
+
+fileSeeker.MyEventEmitter.addListener('success',target => {
+    logger.info('[File Seeker]', target);
+})
+fileSeeker.MyEventEmitter.addListener('fall',err =>{
+    logger.error('[File Seeker]',err);
 });
 
-fileSeeker.MyEventEmitter.addListener('fall',payload =>{
-    logger.error("ERROR! "+ payload.target +" is not found in directory: "+payload.dirPath)
-});
-
-fileSeeker.seek(argv.fileToFind , __dirname);
-fileSeeker.seek(argv.dirToFind , __dirname);
-fileSeeker.seek(argv.fakeFile , __dirname);
 
 
-
-
-
-
-
+    
