@@ -14,11 +14,6 @@ function error(...args){
     console.log(chalk.red(...args));
 }
 
-fileSeeker.MyEventEmitter.addListener('log',payload =>{
-    fs.writeFile('./events.log',payload,{ flag:'a+'}, err =>{
-        console.error(err);
-    })
-})
 
 module.exports = {
     info,

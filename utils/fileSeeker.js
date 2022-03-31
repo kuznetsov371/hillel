@@ -1,13 +1,34 @@
 const fs = require('fs');
 const path = require('path');
-const { promisify } = require('util');
 const EventEmitter = require('events');
 
-const MyEventEmitter = new EventEmitter()
+class ExtEventEmmiter extends EventEmitter{
+    constructor(options){
+        super(options);
+        this._verbose = false;
+    }
+
+    setVerbose(value){
+        this._verbose = value;
+    }
+
+    putLogsToFile(event,...payload){
+        fs.writeFile('./events.log',`[${new Date().toISOString()}][${event}] ${payload}\n`,{ flag:'a+'}, err =>{
+            console.error(err);
+        })
+    }
+
+    emit(event, ...args){
+        this._verbose && this.putLogsToFile(event,...args)
+        return super.emit(event,...args);
+    }
+}
+
+const MyEventEmitter = new ExtEventEmmiter()
 
 async function seek(target, dirPath){
-    const access = promisify(fs.access);
-    const readdir = promisify(fs.readdir);
+    const access = fs.promises.access;
+    const readdir = fs.promises.readdir;
 
     try{
         await access(dirPath);
