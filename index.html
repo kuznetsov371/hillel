@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
+    <title>TODO List</title>
     <body>
-        <b>Hello world!</b>
+        <div class="container">
+            <h2> ToDo List </h2>
+                <form action ="/" method="POST">
+                    <input type="text" name="newtask" placeholder="add new task">        <button> Add Task </button>
+                    <h2> Added Task </h2>
+                    <ul>
+                        {%list%}
+                    </ul>
+                </form>
+        </div>
     </body>
 </html>

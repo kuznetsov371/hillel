@@ -1,23 +1,25 @@
 const http = require('http');
-const fs = require('fs');
+const express = require('express')
+const path = require('path')
 const logger = require('./utils/logger');
+const controller = require('./controller');
+const { runInNewContext } = require('vm');
 
 const PORT = 3000; // 3000 - порт для режима разработки 
-const server = http.createServer();
 
-server.on('request',(req,res) =>{                       //req - readable stream ; res - writable stream;
-    
-    logger.putLogIntoFile('./requests.log',`http://localhost:${PORT}` + req.url);
+const app = express();
 
-    if(req.url == '/'){
-        fs.createReadStream('./index.html').pipe(res);
-    }else if(req.url == '/favicon.ico'){
-        fs.createReadStream('./favicon.ico').pipe(res);     //санчала читаем,затем оправляем в поток
-    }else{
-        res.destroy();
-    }
-}) 
-
-server.listen(PORT ,() =>{
+app.listen(PORT, () => {
     console.log(`Server is serving on http://localhost:${PORT}`)
-} );
+});
+
+app.use(express.urlencoded());
+app.use(express.json());
+
+app.get('/' , (req,res) =>{
+    controller.index(req,res)
+})
+
+app.post('/' , (req,res) =>{
+    controller.addNewTask(req,res)
+})
