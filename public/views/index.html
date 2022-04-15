@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <title>TODO List</title>
+    <body>
+        <div class="container">
+            <h2> ToDo List </h2>
+                <form action ="/" method="POST">
+                    <input type="text" name="newtask">        
+                    <button> Add Task </button>
+                    <h2> Added Task </h2>
+                    <ul>
+                        {%list%}
+                    </ul>
+                </form>
+        </div>
+    </body>
+</html>
